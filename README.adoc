@@ -1,0 +1,60 @@
+= EU Designated Vessels List
+
+image:https://img.shields.io/github/license/ammitto/data-eu-vessels.svg[License]
+image:https://github.com/ammitto/data-eu-vessels/actions/workflows/update.yml/badge.svg["Update Status", link="https://github.com/ammitto/data-eu-vessels/actions/workflows/update.yml"]
+
+== Purpose
+
+This repository contains vessels designated under European Union sanctions,
+hosted by the Danish Maritime Authority (DMA).
+
+== Source
+
+* **Authority**: European Union (hosted by Denmark DMA)
+* **URL**: https://www.dma.dk/growth-and-framework-conditions/maritime-sanctions/sanctions-against-russia-and-belarus/eu-vessel-designations
+* **XLSX Download**: https://www.dma.dk/Media/639016569144709513/ImportversionListOfEUDesignatedVessels181225.xlsx
+* **Format**: XLSX
+* **Update Frequency**: As updated by DMA
+* **Country Code**: EU
+
+== Legal Basis
+
+These vessels are designated under:
+
+* Council Regulation (EU) 833/2014 concerning restrictive measures in view of Russia's actions destabilising the situation in Ukraine
+* Annex XLII - List of vessels designated by the EU
+
+== Directory Structure
+
+```
+data-eu-vessels/
+├── downloaded/        # Raw downloaded XLSX files
+├── processed/         # Processed YAML files (one per vessel)
+└── README.adoc        # This file
+```
+
+== Data Format
+
+Each processed vessel is stored as a YAML file with the following structure:
+
+[source,yaml]
+----
+vessel_name: Angara
+imo_number: '9179842'
+date_of_application: '2024-06-25'
+----
+
+== Important Note
+
+Vessels frequently change names. The **IMO number** is the primary unique
+identifier and should be used for matching.
+
+== Usage
+
+This data is part of the https://github.com/ammitto/ammitto[Ammitto] sanctions
+screening system.
+
+== License
+
+Data is sourced from official Danish Maritime Authority publications.
+Repository structure and processing code are under the MIT License.
