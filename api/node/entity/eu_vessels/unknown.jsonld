@@ -1,0 +1,10 @@
+{
+  "id": "https://www.ammitto.org/entity/eu_vessels/unknown",
+  "entity_type": "vessel",
+  "source_references": [
+    {
+      "source_code": "eu_vessels"
+    }
+  ],
+  "@context": "https://www.ammitto.org/ontology/context.jsonld"
+}

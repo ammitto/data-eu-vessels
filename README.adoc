@@ -44,6 +44,89 @@ imo_number: '9179842'
 date_of_application: '2024-06-25'
 ----
 
+== Source Data Format
+
+The processed YAML files in `processed/` follow this structure:
+
+=== Vessel Entity
+[source,yaml]
+----
+vessel_name: Angara
+imo_number: '9179842'
+date_of_application: '2024-06-25'
+entity_type: vessel
+----
+
+=== Field Definitions
+
+[cols="1,4"]
+|===
+| Field | Description
+
+| `vessel_name`
+| Name of the designated vessel
+
+| `imo_number`
+| International Maritime Organization number (primary identifier)
+
+| `date_of_application`
+| Date sanctions were applied
+
+| `entity_type`
+| Entity type: vessel
+
+|===
+
+== Harmonized Data Format
+
+After harmonization, entities are transformed into JSON-LD format:
+
+=== Entity (JSON-LD)
+[source,json]
+----
+{
+  "@context": "https://www.ammitto.org/schema/v1/context.jsonld",
+  "@id": "https://www.ammitto.org/entity/eu_vessels/9179842",
+  "@type": "VesselEntity",
+  "names": [
+    {
+      "@type": "NameVariant",
+      "fullName": "Angara",
+      "script": "Latn",
+      "isPrimary": true
+    }
+  ],
+  "imoNumber": "9179842",
+  "sanctionEntries": [
+    {
+      "@id": "https://www.ammitto.org/entry/eu_vessels/9179842",
+      "@type": "SanctionEntry",
+      "authority": {
+        "@id": "https://www.ammitto.org/authority/eu",
+        "name": "European Union"
+      },
+      "regime": {
+        "@type": "SanctionRegime",
+        "code": "RUSSIA",
+        "name": "Russia Sanctions"
+      },
+      "effects": [
+        {
+          "@type": "SanctionEffect",
+          "effectType": "asset_freeze",
+          "scope": "full"
+        }
+      ],
+      "status": "active",
+      "period": {
+        "@type": "TemporalPeriod",
+        "listedDate": "2024-06-25"
+      }
+    }
+  ]
+}
+----
+
 == Important Note
 
 Vessels frequently change names. The **IMO number** is the primary unique
