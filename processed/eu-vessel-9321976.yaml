@@ -1,3 +1,6 @@
+---
 vessel_name: Heidi A
 imo_number: '9321976'
-date_of_application: '2024-12-17'
+designations:
+- date_of_application: '2024-12-17'
+  subject_to: Article 3s (Council Regulation 833/2014)

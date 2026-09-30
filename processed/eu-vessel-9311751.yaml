@@ -1,3 +1,6 @@
+---
 vessel_name: Hitit
 imo_number: '9311751'
-date_of_application: '2025-12-19'
+designations:
+- date_of_application: '2025-12-19'
+  subject_to: Article 3s (Council Regulation 833/2014)
