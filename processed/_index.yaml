@@ -1,9 +1,9 @@
 ---
 source: eu_vessels
 count: 730
-fetched_at: '2026-10-08T11:18:10Z'
+fetched_at: '2026-10-08T12:49:32Z'
 schema: ammitto:sources:eu_vessels:v1
-pruned: 11
+pruned: 0
 files:
 - eu-vessel-1021570.yaml
 - eu-vessel-1031537.yaml
