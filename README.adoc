@@ -1,7 +1,7 @@
 = EU Designated Vessels List
 
 image:https://img.shields.io/github/license/ammitto/data-eu-vessels.svg[License]
-image:https://github.com/ammitto/data-eu-vessels/actions/workflows/update.yml/badge.svg["Update Status", link="https://github.com/ammitto/data-eu-vessels/actions/workflows/update.yml"]
+image:https://github.com/ammitto/data-eu-vessels/actions/workflows/fetch.yml/badge.svg["Update Status", link="https://github.com/ammitto/data-eu-vessels/actions/workflows/fetch.yml"]
 
 == Purpose
 
@@ -28,7 +28,6 @@ These vessels are designated under:
 
 ```
 data-eu-vessels/
-├── downloaded/        # Raw downloaded XLSX files
 ├── processed/         # Processed YAML files (one per vessel)
 └── README.adoc        # This file
 ```
@@ -136,20 +135,8 @@ identifier and should be used for matching.
 
 This repository's processed YAML data feeds into the Ammitto knowledge graph.
 
-When the harmonization process runs:
-
-[source,shell]
-----
-# Auto-detect all data-* repos and harmonize
-ammitto harmonize --scan --sources-dir /path/to/repos --output-dir ./api/v1
-----
-
-The eu_vessels data is transformed into:
-
-* Individual JSON-LD nodes in `api/v1/node/entity/eu_vessels/{id}.jsonld`
-* Sanction entries in `api/v1/node/entry/eu_vessels/{id}.jsonld`
-* Lightweight search index entries
-* Facet counts for filtering
+Harmonized JSON-LD for this source:
+https://www.ammitto.org/api/v1/sources/eu_vessels.jsonld
 
 == Usage
 
