@@ -1,155 +1,108 @@
-= EU Designated Vessels List
+= Ammitto EU vessel sanctions data
 
-image:https://img.shields.io/github/license/ammitto/data-eu-vessels.svg[License]
-image:https://github.com/ammitto/data-eu-vessels/actions/workflows/fetch.yml/badge.svg["Update Status", link="https://github.com/ammitto/data-eu-vessels/actions/workflows/fetch.yml"]
+image:https://github.com/ammitto/data-eu-vessels/actions/workflows/fetch.yml/badge.svg["Fetch Data", link="https://github.com/ammitto/data-eu-vessels/actions/workflows/fetch.yml"]
 
-== Purpose
-
-This repository contains vessels designated under European Union sanctions,
-hosted by the Danish Maritime Authority (DMA).
+This repository stores EU-designated vessel records as YAML for Ammitto,
+using the list published by the Danish Maritime Authority (DMA).
+`processed/` holds one file per vessel.
 
 == Source
 
-* **Authority**: European Union (hosted by Denmark DMA)
-* **URL**: https://www.dma.dk/growth-and-framework-conditions/maritime-sanctions/sanctions-against-russia-and-belarus/eu-vessel-designations
-* **XLSX Download**: https://www.dma.dk/Media/639016569144709513/ImportversionListOfEUDesignatedVessels181225.xlsx
-* **Format**: XLSX
-* **Update Frequency**: As updated by DMA
-* **Country Code**: EU
+* Publisher: Danish Maritime Authority (DMA)
+* List page: https://www.dma.dk/growth-and-framework-conditions/maritime-sanctions/general-information/eu-vessel-designations
+* File downloaded: the "List of designated vessels" spreadsheet (`.xlsx`) linked from that page; its URL changes with each new version
 
-== Legal Basis
+The page and its spreadsheet cover vessels designated under Annex XLII of
+Council Regulation (EU) 833/2014 (sanctions against Russia and Belarus) and
+under Council Regulation (EU) 2017/1509 (sanctions against North Korea). The DMA notes that vessels can change names,
+so a vessel should be checked by its IMO number.
 
-These vessels are designated under:
+== Contents
 
-* Council Regulation (EU) 833/2014 concerning restrictive measures in view of Russia's actions destabilising the situation in Ukraine
-* Annex XLII - List of vessels designated by the EU
+`processed/` holds one file per vessel, named after its IMO number:
+`processed/eu-vessel-1021570.yaml` is IMO 1021570. A vessel listed without an
+IMO number is named after the vessel name instead, such as
+`processed/eu-vessel-min-ning-de-you-078.yaml`.
 
-== Directory Structure
+`processed/_index.yaml` lists every file, with the time of the last fetch.
 
-```
-data-eu-vessels/
-├── processed/         # Processed YAML files (one per vessel)
-└── README.adoc        # This file
-```
-
-== Data Format
-
-Each processed vessel is stored as a YAML file with the following structure:
-
-[source,yaml]
-----
-vessel_name: Angara
-imo_number: '9179842'
-date_of_application: '2024-06-25'
-----
-
-== Source Data Format
-
-The processed YAML files in `processed/` follow this structure:
-
-=== Vessel Entity
-[source,yaml]
-----
-vessel_name: Angara
-imo_number: '9179842'
-date_of_application: '2024-06-25'
-entity_type: vessel
-----
-
-=== Field Definitions
-
-[cols="1,4"]
+[cols="1,1,3"]
 |===
-| Field | Description
+| Key | Type | Meaning
 
-| `vessel_name`
-| Name of the designated vessel
-
-| `imo_number`
-| International Maritime Organization number (primary identifier)
-
-| `date_of_application`
-| Date sanctions were applied
-
-| `entity_type`
-| Entity type: vessel
-
+| `vessel_name` | string | Name of the vessel
+| `imo_number` | string | IMO number, where listed
+| `designations` | list | One entry per designation: `subject_to` (the measure and regulation, such as `Article 3s (Council Regulation 833/2014)` or `Asset freeze (Council Regulation 2017/1509)`) and `date_of_application` (`YYYY-MM-DD`)
 |===
 
-== Harmonized Data Format
+== Using the data
 
-After harmonization, entities are transformed into JSON-LD format:
+Clone or download this repository and run either example from its root
+directory.
 
-=== Entity (JSON-LD)
-[source,json]
+Ruby:
+
+[source,ruby]
 ----
-{
-  "@context": "https://www.ammitto.org/schema/v1/context.jsonld",
-  "@id": "https://www.ammitto.org/entity/eu_vessels/9179842",
-  "@type": "VesselEntity",
-  "names": [
-    {
-      "@type": "NameVariant",
-      "fullName": "Angara",
-      "script": "Latn",
-      "isPrimary": true
-    }
-  ],
-  "imoNumber": "9179842",
-  "sanctionEntries": [
-    {
-      "@id": "https://www.ammitto.org/entry/eu_vessels/9179842",
-      "@type": "SanctionEntry",
-      "authority": {
-        "@id": "https://www.ammitto.org/authority/eu",
-        "name": "European Union"
-      },
-      "regime": {
-        "@type": "SanctionRegime",
-        "code": "RUSSIA",
-        "name": "Russia Sanctions"
-      },
-      "effects": [
-        {
-          "@type": "SanctionEffect",
-          "effectType": "asset_freeze",
-          "scope": "full"
-        }
-      ],
-      "status": "active",
-      "period": {
-        "@type": "TemporalPeriod",
-        "listedDate": "2024-06-25"
-      }
-    }
-  ]
-}
+require "yaml"
+
+Dir.glob("processed/eu-vessel-*.yaml").sort.each do |path|
+  vessel = YAML.safe_load_file(path)
+  measures = vessel["designations"].map { |d| d["subject_to"] }.join("; ")
+  puts [vessel["imo_number"], vessel["vessel_name"], measures].join("\t")
+end
 ----
 
-== Important Note
+Python (requires PyYAML, installed with `python3 -m pip install PyYAML`):
 
-Vessels frequently change names. The **IMO number** is the primary unique
-identifier and should be used for matching.
+[source,python]
+----
+import glob
+import yaml
 
-== Knowledge Graph Integration
+for path in sorted(glob.glob("processed/eu-vessel-*.yaml")):
+    with open(path, encoding="utf-8") as f:
+        vessel = yaml.safe_load(f)
+    measures = "; ".join(d["subject_to"] for d in vessel["designations"])
+    print(vessel.get("imo_number", ""), vessel["vessel_name"], measures, sep="\t")
+----
 
-This repository's processed YAML data feeds into the Ammitto knowledge graph.
-
-Harmonized JSON-LD for this source:
+The same list, harmonized with the other sources into JSON-LD:
 https://www.ammitto.org/api/v1/sources/eu_vessels.jsonld
 
-== Usage
+== Updates
 
-This data is part of the https://github.com/ammitto/ammitto[Ammitto] sanctions
-screening system.
+The `Fetch Data` workflow (`.github/workflows/fetch.yml`) downloads the list
+every day at 06:00 UTC and commits any change to `processed/`. It runs with
+`--prune`, so a vessel the DMA has removed is deleted here on the next fetch.
 
-== Related Repositories
+== Development
 
-* https://github.com/ammitto/ammitto[ammitto] - Main Ruby gem with harmonization
-* https://github.com/ammitto/data[data] - Harmonized knowledge graph output
-* https://github.com/ammitto/ammitto.github.io[ammitto.github.io] - Website with search
+`processed/` is generated by the Ammitto gem. To refresh it locally, use
+Ruby 3.4 (the version selected by the fetch workflow) and Bundler. From
+the repository root, run:
+
+[source,shell]
+----
+bundle install
+bundle exec ammitto fetch eu_vessels --format yaml --output-dir processed --verbose --prune
+----
+
+`--prune` removes files for listings no longer present in the fetched list.
+Review the generated changes before committing them.
+
+Fetch and parser changes belong in the
+https://github.com/ammitto/ammitto[Ammitto gem]; its source models are in
+https://github.com/ammitto/ammitto/tree/main/lib/ammitto/sources/eu_vessels[`lib/ammitto/sources/eu_vessels/`].
+Report data or source-list issues in
+https://github.com/ammitto/data-eu-vessels/issues[this repository].
 
 == License
 
 Data is sourced from official Danish Maritime Authority publications.
 Repository structure and processing code are under the MIT License.
+
+== Related
+
+* https://www.ammitto.org[ammitto.org]: search across all sources
+* https://github.com/ammitto/ammitto[ammitto]: the Ruby gem that fetches and harmonizes this data
