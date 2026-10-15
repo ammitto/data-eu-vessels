@@ -70,6 +70,48 @@ for path in sorted(glob.glob("processed/eu-vessel-*.yaml")):
 The same list, harmonized with the other sources into JSON-LD:
 https://www.ammitto.org/api/v1/sources/eu_vessels.jsonld
 
+== Harmonized field mapping
+
+The https://github.com/ammitto/ammitto/blob/main/lib/ammitto/sources/eu_vessels/transformer.rb[eu_vessels transformer]
+maps the processed source fields below to canonical Ruby attributes.
+Entity classes are in `Ammitto::Ontology::Entities`, entry/regime classes in
+`Ammitto::Ontology::Sanction`, and nested values in
+`Ammitto::Ontology::ValueObjects`. JSON-LD serialization can use different keys.
+
+[cols="2,2,4",options="header"]
+|===
+| Source fields | Canonical target | Transformation
+
+| `imo_number`, `vessel_name`
+| `VesselEntity.id`, `SanctionEntry.entity_id`
+| Use the IMO number as the local ID, or a name slug when it is absent; scope the IRI to this source.
+
+| `vessel_name`
+| `VesselEntity.names` (`NameVariant.full_name`)
+| Create a primary name when supplied.
+
+| `imo_number`
+| `VesselEntity.imo_number`, `source_references` (`SourceReference.reference_number`)
+| Retain the IMO value; the source reference also records `source_code` and the harmonization time in `fetched_at`.
+
+| `designations`
+| One `SanctionEntry` per designation
+| Share one vessel entity. Sort multiple designations by date/measure; the earliest keeps the unsuffixed entry ID, later IDs include date and measure.
+
+| `designations[].date_of_application`
+| `TemporalPeriod.listed_date`, `is_indefinite`
+| Retain the designation date and mark the period indefinite. Older top-level `date_of_application` records are also accepted.
+
+| `designations[].subject_to`
+| `SanctionEntry.regime`, `legal_bases`, `effects`
+| Parse the stated regulation and measures. Article 3s maps to entry and service prohibitions; unknown measures stop transformation.
+
+| `designations[].subject_to`
+| `SanctionEntry.remarks`
+| Retain the original measure text. A legacy designation without this field supplies no inferred regime or measure.
+
+|===
+
 == Updates
 
 The `Fetch Data` workflow (`.github/workflows/fetch.yml`) downloads the list
