@@ -1,7 +1,7 @@
 ---
 source: eu_vessels
-count: 730
-fetched_at: '2026-11-16T14:48:06Z'
+count: 734
+fetched_at: '2026-11-27T16:09:09Z'
 schema: ammitto:sources:eu_vessels:v1
 pruned: 0
 files:
@@ -30,6 +30,7 @@ files:
 - eu-vessel-8412467.yaml
 - eu-vessel-8414477.yaml
 - eu-vessel-8503228.yaml
+- eu-vessel-8514306.yaml
 - eu-vessel-8517839.yaml
 - eu-vessel-8518572.yaml
 - eu-vessel-8518780.yaml
@@ -78,9 +79,11 @@ files:
 - eu-vessel-9030591.yaml
 - eu-vessel-9036272.yaml
 - eu-vessel-9036284.yaml
+- eu-vessel-9036387.yaml
 - eu-vessel-9037123.yaml
 - eu-vessel-9041552.yaml
 - eu-vessel-9056571.yaml
+- eu-vessel-9058713.yaml
 - eu-vessel-9066540.yaml
 - eu-vessel-9066978.yaml
 - eu-vessel-9079169.yaml
@@ -113,6 +116,7 @@ files:
 - eu-vessel-9187227.yaml
 - eu-vessel-9189146.yaml
 - eu-vessel-9191773.yaml
+- eu-vessel-9194012.yaml
 - eu-vessel-9194983.yaml
 - eu-vessel-9198082.yaml
 - eu-vessel-9198290.yaml
